@@ -98,7 +98,7 @@ function checkCol(x, y, vx, vy, rad) {
     var dy = wall.y1 - y;
 
     if (dx * dx + dy * dy <= radSqr) {
-      lines.drawLine(colLine, "orange");
+      lines.drawPoint({x:wall.x1, y:wall.y1},'red');
       var l = lines.normalize(colLine.vec);
       l.x *= rad;
       l.y *= rad;

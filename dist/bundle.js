@@ -507,7 +507,7 @@ function checkCol(x, y, vx, vy, rad) {
     var dy = wall.y1 - y;
 
     if (dx * dx + dy * dy <= radSqr) {
-      __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].drawLine(colLine, "orange");
+      __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].drawPoint({x:wall.x1, y:wall.y1},'red');
       var l = __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].normalize(colLine.vec);
       l.x *= rad;
       l.y *= rad;
