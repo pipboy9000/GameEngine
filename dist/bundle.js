@@ -68,28 +68,87 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__input__ = __webpack_require__(2);
+
+
 var canvas;
 var ctx;
 var width, height;
 
+var zoom = 1;
+var targetZoom = 1;
+
+var camPosX = 0;
+var targetCamPosX = 0;
+
+var camPosY = 0;
+var targetCamPosY = 0;
+
 function init() {
-    console.log('init canvas');
-    canvas = document.getElementById('canvas');
-    width = canvas.width;
-    height = canvas.height;
-    ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'black';
-    ctx.strokeStyle = '#ff0000';
+  console.log("init canvas");
+  canvas = document.getElementById("canvas");
+  width = canvas.width;
+  height = canvas.height;
+  ctx = canvas.getContext("2d");
+  ctx.fillStyle = "black";
+  ctx.strokeStyle = "#ff0000";
 }
 
 function clearCanvas() {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, width, height);
+}
+
+function draw() {
+  if (__WEBPACK_IMPORTED_MODULE_0__input__["a" /* default */].keyboard.ControlLeft) {
+    setZoom(2);
+  }
+
+  if (!__WEBPACK_IMPORTED_MODULE_0__input__["a" /* default */].keyboard.ControlLeft) {
+    setZoom(1);
+  }
+
+  zoom += (targetZoom - zoom) / 10;
+  camPosX += (targetCamPosX - camPosX) / 10;
+  camPosY += (targetCamPosY - camPosY) / 10;
+
+  ctx.setTransform(zoom, 0, 0, zoom, -camPosX + 300, -camPosY + 300);
+}
+
+function setZoom(z) {
+  targetZoom = z;
+}
+
+function getZoom() {
+  return zoom;
+}
+
+function setCamPos(x, y) {
+  targetCamPosX = x;
+  targetCamPosY = y;
+}
+
+function getCamPos() {
+  return { x: camPosX, y: camPosY };
 }
 
 init();
 
-/* harmony default export */ __webpack_exports__["a"] = ({ canvas, ctx, width, height, clearCanvas });
+/* harmony default export */ __webpack_exports__["a"] = ({
+  canvas,
+  ctx,
+  width,
+  height,
+  clearCanvas,
+  draw,
+  setZoom,
+  getZoom,
+  getCamPos,
+  setCamPos,
+  camPosX,
+  camPosY
+});
+
 
 /***/ }),
 /* 1 */
@@ -211,9 +270,6 @@ function drawVec(vec, x, y, line, color, width) {
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.moveTo(x, y);
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.lineTo(x + vec.x, y + vec.y);
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.stroke();
-
-  if (color) __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.strokeStyle = "red";
-  if (width) __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.lineWidth = 1;
 }
 
 function isAbove(line, x, y) {
@@ -333,8 +389,10 @@ var mouse = {
 
 function getMousePos(evt) {
   var rect = __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].canvas.getBoundingClientRect();
-  mouse.x = evt.clientX - rect.left;
-  mouse.y = evt.clientY - rect.top;
+  var camPos = __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getCamPos();
+  mouse.x = (evt.clientX - rect.left + camPos.x - 300) / __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getZoom();
+  mouse.y = (evt.clientY - rect.top + camPos.y - 300) / __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getZoom() ;
+  console.log(mouse.x, mouse.y);
 }
 
 function mouseDown(evt) {
@@ -427,17 +485,17 @@ var wallsData = [
     x1: 300,
     y1: 550,
     x2: 50,
-    y2: 300
+    y2: 50
   },
   {
     x1: 50,
-    y1: 300,
+    y1: 50,
     x2: 300,
     y2: 50
   },
   {
     x1: 350,
-    y1: 300,
+    y1: 270,
     x2: 300,
     y2: 250
   },
@@ -451,7 +509,7 @@ var wallsData = [
     x1: 250,
     y1: 300,
     x2: 350,
-    y2: 300
+    y2: 270
   }
 ];
 
@@ -469,7 +527,7 @@ function checkCol(x, y, vx, vy, rad) {
   var colPoints = [];
   var res = { x: 0, y: 0 };
 
-  //check walls
+  //check walls first
   walls.forEach(wall => {
     colLine = __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].getLine(
       x,
@@ -478,7 +536,6 @@ function checkCol(x, y, vx, vy, rad) {
       y + -wall.normal.y * rad
     );
 
-    // lines.drawLine(colLine, "orange", 2);
     colPoint = __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].getIntersection(wall, colLine);
     if (colPoint) {
       __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].drawPoint(colPoint);
@@ -499,16 +556,14 @@ function checkCol(x, y, vx, vy, rad) {
     return res;
   }
 
-  //check vertices first
+  //check vertices
   walls.forEach(wall => {
-    colLine = __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].getLine(x, y, wall.x1, wall.y1);
-
     var dx = wall.x1 - x;
     var dy = wall.y1 - y;
 
     if (dx * dx + dy * dy <= radSqr) {
-      __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].drawPoint({x:wall.x1, y:wall.y1},'red');
-      var l = __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].normalize(colLine.vec);
+      __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].drawPoint({ x: wall.x1, y: wall.y1 }, "red", 3);
+      var l = __WEBPACK_IMPORTED_MODULE_1__lines__["a" /* default */].normalize({ x: dx, y: dy });
       l.x *= rad;
       l.y *= rad;
       colPoints.push({
@@ -524,7 +579,6 @@ function checkCol(x, y, vx, vy, rad) {
       res.y += p.y;
     });
   }
-
   return res;
 }
 
@@ -611,19 +665,11 @@ function gameLoop(time) {
 
   __WEBPACK_IMPORTED_MODULE_3__player__["a" /* default */].move(dt);
 
+  __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw();
   __WEBPACK_IMPORTED_MODULE_4__level__["a" /* default */].draw();
   __WEBPACK_IMPORTED_MODULE_3__player__["a" /* default */].draw();
 
   var playerPos = __WEBPACK_IMPORTED_MODULE_3__player__["a" /* default */].getXY();
-
-  // var testLine = lines.getLine(
-  //   playerPos.x,
-  //   playerPos.y,
-  //   input.mouse.x,
-  //   input.mouse.y
-  // );
-
-  // lines.drawLine(testLine, "purple");
 
   window.requestAnimationFrame(gameLoop);
 }
@@ -739,26 +785,28 @@ function move(dt) {
   x += vx;
   y += vy;
 
-  var newPos = __WEBPACK_IMPORTED_MODULE_3__level__["a" /* default */].checkCol(x, y, vx, vy, rad);
-  if (newPos) {
-    x += newPos.x;
-    y += newPos.y;
+  var moveBack = __WEBPACK_IMPORTED_MODULE_3__level__["a" /* default */].checkCol(x, y, vx, vy, rad);
+  if (moveBack) {
+    x += moveBack.x;
+    y += moveBack.y;
   }
+
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].setCamPos(x, y);
 }
 
 function draw() {
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.beginPath();
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.strokeStyle = "green";
-  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.lineWidth = 2;
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.lineWidth = 3;
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.arc(x, y, rad, 0, Math.PI * 2);
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.stroke();
 
   //mouse look
-  // canvas.ctx.beginPath();
-  // canvas.ctx.moveTo(x, y);
-  // canvas.ctx.strokeStyle = "white";
-  // canvas.ctx.lineTo(x - Math.sin(dir) * rad, y - Math.cos(dir) * rad);
-  // canvas.ctx.stroke();
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.beginPath();
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.moveTo(x, y);
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.strokeStyle = "white";
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.lineTo(x - Math.sin(dir) * rad, y - Math.cos(dir) * rad);
+  __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.stroke();
 
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.beginPath();
   __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].ctx.moveTo(x, y);

@@ -21,19 +21,11 @@ function gameLoop(time) {
 
   player.move(dt);
 
+  canvas.draw();
   level.draw();
   player.draw();
 
   var playerPos = player.getXY();
-
-  // var testLine = lines.getLine(
-  //   playerPos.x,
-  //   playerPos.y,
-  //   input.mouse.x,
-  //   input.mouse.y
-  // );
-
-  // lines.drawLine(testLine, "purple");
 
   window.requestAnimationFrame(gameLoop);
 }

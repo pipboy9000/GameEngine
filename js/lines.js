@@ -112,9 +112,6 @@ function drawVec(vec, x, y, line, color, width) {
   canvas.ctx.moveTo(x, y);
   canvas.ctx.lineTo(x + vec.x, y + vec.y);
   canvas.ctx.stroke();
-
-  if (color) canvas.ctx.strokeStyle = "red";
-  if (width) canvas.ctx.lineWidth = 1;
 }
 
 function isAbove(line, x, y) {

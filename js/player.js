@@ -85,26 +85,28 @@ function move(dt) {
   x += vx;
   y += vy;
 
-  var newPos = level.checkCol(x, y, vx, vy, rad);
-  if (newPos) {
-    x += newPos.x;
-    y += newPos.y;
+  var moveBack = level.checkCol(x, y, vx, vy, rad);
+  if (moveBack) {
+    x += moveBack.x;
+    y += moveBack.y;
   }
+
+  canvas.setCamPos(x, y);
 }
 
 function draw() {
   canvas.ctx.beginPath();
   canvas.ctx.strokeStyle = "green";
-  canvas.ctx.lineWidth = 2;
+  canvas.ctx.lineWidth = 3;
   canvas.ctx.arc(x, y, rad, 0, Math.PI * 2);
   canvas.ctx.stroke();
 
   //mouse look
-  // canvas.ctx.beginPath();
-  // canvas.ctx.moveTo(x, y);
-  // canvas.ctx.strokeStyle = "white";
-  // canvas.ctx.lineTo(x - Math.sin(dir) * rad, y - Math.cos(dir) * rad);
-  // canvas.ctx.stroke();
+  canvas.ctx.beginPath();
+  canvas.ctx.moveTo(x, y);
+  canvas.ctx.strokeStyle = "white";
+  canvas.ctx.lineTo(x - Math.sin(dir) * rad, y - Math.cos(dir) * rad);
+  canvas.ctx.stroke();
 
   canvas.ctx.beginPath();
   canvas.ctx.moveTo(x, y);

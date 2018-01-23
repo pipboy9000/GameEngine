@@ -18,17 +18,17 @@ var wallsData = [
     x1: 300,
     y1: 550,
     x2: 50,
-    y2: 300
+    y2: 50
   },
   {
     x1: 50,
-    y1: 300,
+    y1: 50,
     x2: 300,
     y2: 50
   },
   {
     x1: 350,
-    y1: 300,
+    y1: 270,
     x2: 300,
     y2: 250
   },
@@ -42,7 +42,7 @@ var wallsData = [
     x1: 250,
     y1: 300,
     x2: 350,
-    y2: 300
+    y2: 270
   }
 ];
 
@@ -60,7 +60,7 @@ function checkCol(x, y, vx, vy, rad) {
   var colPoints = [];
   var res = { x: 0, y: 0 };
 
-  //check walls
+  //check walls first
   walls.forEach(wall => {
     colLine = lines.getLine(
       x,
@@ -69,7 +69,6 @@ function checkCol(x, y, vx, vy, rad) {
       y + -wall.normal.y * rad
     );
 
-    // lines.drawLine(colLine, "orange", 2);
     colPoint = lines.getIntersection(wall, colLine);
     if (colPoint) {
       lines.drawPoint(colPoint);
@@ -90,16 +89,14 @@ function checkCol(x, y, vx, vy, rad) {
     return res;
   }
 
-  //check vertices first
+  //check vertices
   walls.forEach(wall => {
-    colLine = lines.getLine(x, y, wall.x1, wall.y1);
-
     var dx = wall.x1 - x;
     var dy = wall.y1 - y;
 
     if (dx * dx + dy * dy <= radSqr) {
-      lines.drawPoint({x:wall.x1, y:wall.y1},'red');
-      var l = lines.normalize(colLine.vec);
+      lines.drawPoint({ x: wall.x1, y: wall.y1 }, "red", 3);
+      var l = lines.normalize({ x: dx, y: dy });
       l.x *= rad;
       l.y *= rad;
       colPoints.push({
@@ -115,7 +112,6 @@ function checkCol(x, y, vx, vy, rad) {
       res.y += p.y;
     });
   }
-
   return res;
 }
 
