@@ -74,6 +74,7 @@
 var canvas;
 var ctx;
 var width, height;
+var halfWidth, halfHeight;
 
 var zoom = 1;
 var targetZoom = 1;
@@ -89,6 +90,8 @@ function init() {
   canvas = document.getElementById("canvas");
   width = canvas.width;
   height = canvas.height;
+  halfWidth = canvas.width / 2;
+  halfHeight = canvas.height / 2;
   ctx = canvas.getContext("2d");
   ctx.fillStyle = "black";
   ctx.strokeStyle = "#ff0000";
@@ -101,7 +104,7 @@ function clearCanvas() {
 
 function draw() {
   if (__WEBPACK_IMPORTED_MODULE_0__input__["a" /* default */].keyboard.ControlLeft) {
-    setZoom(2);
+    setZoom(0.25);
   }
 
   if (!__WEBPACK_IMPORTED_MODULE_0__input__["a" /* default */].keyboard.ControlLeft) {
@@ -112,7 +115,14 @@ function draw() {
   camPosX += (targetCamPosX - camPosX) / 10;
   camPosY += (targetCamPosY - camPosY) / 10;
 
-  ctx.setTransform(zoom, 0, 0, zoom, -camPosX + 300, -camPosY + 300);
+  ctx.setTransform(
+    zoom,
+    0,
+    0,
+    zoom,
+    -camPosX * zoom + halfWidth,
+    -camPosY * zoom + halfHeight
+  );
 }
 
 function setZoom(z) {
@@ -146,7 +156,9 @@ init();
   getCamPos,
   setCamPos,
   camPosX,
-  camPosY
+  camPosY,
+  halfWidth,
+  halfHeight
 });
 
 
@@ -390,8 +402,9 @@ var mouse = {
 function getMousePos(evt) {
   var rect = __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].canvas.getBoundingClientRect();
   var camPos = __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getCamPos();
-  mouse.x = (evt.clientX - rect.left + camPos.x - 300) / __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getZoom();
-  mouse.y = (evt.clientY - rect.top + camPos.y - 300) / __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getZoom() ;
+  var zoom = __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].getZoom();
+  mouse.x = (evt.clientX - rect.left - __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].halfWidth) / zoom + camPos.x;
+  mouse.y = (evt.clientY - rect.top - __WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* default */].halfHeight) / zoom + camPos.y;
   console.log(mouse.x, mouse.y);
 }
 
@@ -708,6 +721,7 @@ var vx, vy;
 var pushVec;
 var dir;
 var rad;
+var radSqr;
 var speed;
 var acc = 1.5; //acceleration
 var maxSpeed = 5;
@@ -719,6 +733,7 @@ function init() {
   vx = 0;
   vy = 0;
   rad = 30;
+  radSqr = 900;
   speed = 0;
 }
 
@@ -736,16 +751,16 @@ function move(dt) {
     y: 0
   };
 
-  if (__WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].keyboard.KeyW) {
-    pushVec.x += -Math.sin(dir);
-    pushVec.y += -Math.cos(dir);
-    push = true;
-  }
-
-  if (__WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].mouse.left) {
-    pushVec.x += -Math.sin(dir);
-    pushVec.y += -Math.cos(dir);
-    push = true;
+  if (__WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].keyboard.KeyW || __WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].mouse.left) {
+    if (
+      (x - __WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].mouse.x) * (x - __WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].mouse.x) +
+        (y - __WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].mouse.y) * (y - __WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].mouse.y) >
+      radSqr
+    ) {
+      pushVec.x += -Math.sin(dir);
+      pushVec.y += -Math.cos(dir);
+      push = true;
+    }
   }
 
   if (__WEBPACK_IMPORTED_MODULE_1__input__["a" /* default */].keyboard.KeyA) {

@@ -8,6 +8,7 @@ var vx, vy;
 var pushVec;
 var dir;
 var rad;
+var radSqr;
 var speed;
 var acc = 1.5; //acceleration
 var maxSpeed = 5;
@@ -19,6 +20,7 @@ function init() {
   vx = 0;
   vy = 0;
   rad = 30;
+  radSqr = 900;
   speed = 0;
 }
 
@@ -36,16 +38,16 @@ function move(dt) {
     y: 0
   };
 
-  if (input.keyboard.KeyW) {
-    pushVec.x += -Math.sin(dir);
-    pushVec.y += -Math.cos(dir);
-    push = true;
-  }
-
-  if (input.mouse.left) {
-    pushVec.x += -Math.sin(dir);
-    pushVec.y += -Math.cos(dir);
-    push = true;
+  if (input.keyboard.KeyW || input.mouse.left) {
+    if (
+      (x - input.mouse.x) * (x - input.mouse.x) +
+        (y - input.mouse.y) * (y - input.mouse.y) >
+      radSqr
+    ) {
+      pushVec.x += -Math.sin(dir);
+      pushVec.y += -Math.cos(dir);
+      push = true;
+    }
   }
 
   if (input.keyboard.KeyA) {

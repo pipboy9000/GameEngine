@@ -13,8 +13,9 @@ var mouse = {
 function getMousePos(evt) {
   var rect = canvas.canvas.getBoundingClientRect();
   var camPos = canvas.getCamPos();
-  mouse.x = (evt.clientX - rect.left + camPos.x - 300) / canvas.getZoom();
-  mouse.y = (evt.clientY - rect.top + camPos.y - 300) / canvas.getZoom() ;
+  var zoom = canvas.getZoom();
+  mouse.x = (evt.clientX - rect.left - canvas.halfWidth) / zoom + camPos.x;
+  mouse.y = (evt.clientY - rect.top - canvas.halfHeight) / zoom + camPos.y;
   console.log(mouse.x, mouse.y);
 }
 

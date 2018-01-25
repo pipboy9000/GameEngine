@@ -3,6 +3,7 @@ import input from "./input";
 var canvas;
 var ctx;
 var width, height;
+var halfWidth, halfHeight;
 
 var zoom = 1;
 var targetZoom = 1;
@@ -18,6 +19,8 @@ function init() {
   canvas = document.getElementById("canvas");
   width = canvas.width;
   height = canvas.height;
+  halfWidth = canvas.width / 2;
+  halfHeight = canvas.height / 2;
   ctx = canvas.getContext("2d");
   ctx.fillStyle = "black";
   ctx.strokeStyle = "#ff0000";
@@ -30,7 +33,7 @@ function clearCanvas() {
 
 function draw() {
   if (input.keyboard.ControlLeft) {
-    setZoom(2);
+    setZoom(0.25);
   }
 
   if (!input.keyboard.ControlLeft) {
@@ -41,7 +44,14 @@ function draw() {
   camPosX += (targetCamPosX - camPosX) / 10;
   camPosY += (targetCamPosY - camPosY) / 10;
 
-  ctx.setTransform(zoom, 0, 0, zoom, -camPosX + 300, -camPosY + 300);
+  ctx.setTransform(
+    zoom,
+    0,
+    0,
+    zoom,
+    -camPosX * zoom + halfWidth,
+    -camPosY * zoom + halfHeight
+  );
 }
 
 function setZoom(z) {
@@ -75,5 +85,7 @@ export default {
   getCamPos,
   setCamPos,
   camPosX,
-  camPosY
+  camPosY,
+  halfWidth,
+  halfHeight
 };
