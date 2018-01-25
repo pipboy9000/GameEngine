@@ -33,7 +33,7 @@ function clearCanvas() {
 
 function draw() {
   if (input.keyboard.ControlLeft) {
-    setZoom(0.25);
+    setZoom(2);
   }
 
   if (!input.keyboard.ControlLeft) {
