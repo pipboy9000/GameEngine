@@ -41,8 +41,8 @@ function draw() {
   }
 
   zoom += (targetZoom - zoom) / 10;
-  camPosX += (targetCamPosX - camPosX) / 10;
-  camPosY += (targetCamPosY - camPosY) / 10;
+  camPosX += (targetCamPosX - camPosX) / 5;
+  camPosY += (targetCamPosY - camPosY) / 5;
 
   ctx.setTransform(
     zoom,

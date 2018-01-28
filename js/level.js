@@ -48,6 +48,19 @@ var wallsData = [
 
 var walls = [];
 
+// function checkCol(x, y, vx, vy, rad) {
+//   var moveBack = level.checkCol(x, y, vx, vy, rad);
+//   var iterations = 0;
+//   while ((moveBack.x != 0 || moveBack.y != 0) && iterations < 10) {
+//     iterations++;
+//     if (moveBack) {
+//       x += moveBack.x;
+//       y += moveBack.y;
+//     }
+//     moveBack = level.checkCol(x, y, moveBack.x, moveBack.y, rad);
+//   }
+// }
+
 function checkCol(x, y, vx, vy, rad) {
   // var dp;
   var radSqr = rad * rad;

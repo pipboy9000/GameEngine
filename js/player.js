@@ -88,9 +88,14 @@ function move(dt) {
   y += vy;
 
   var moveBack = level.checkCol(x, y, vx, vy, rad);
-  if (moveBack) {
-    x += moveBack.x;
-    y += moveBack.y;
+  var iterations = 0;
+  while ((moveBack.x != 0 || moveBack.y != 0) && iterations < 10) {
+    iterations++;
+    if (moveBack) {
+      x += moveBack.x;
+      y += moveBack.y;
+    }
+    moveBack = level.checkCol(x, y, moveBack.x, moveBack.y, rad);
   }
 
   canvas.setCamPos(x, y);
