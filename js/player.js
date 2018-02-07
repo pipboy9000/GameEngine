@@ -25,7 +25,7 @@ function init() {
 }
 
 function getDir() {
-  return Math.atan2(x - input.mouse.x, y - input.mouse.y);
+  return Math.atan2(x - input.mouse.worldX, y - input.mouse.worldY);
 }
 
 function move(dt) {
@@ -40,8 +40,8 @@ function move(dt) {
 
   if (input.keyboard.KeyW || input.mouse.left) {
     if (
-      (x - input.mouse.x) * (x - input.mouse.x) +
-        (y - input.mouse.y) * (y - input.mouse.y) >
+      (x - input.mouse.worldX) * (x - input.mouse.worldX) +
+        (y - input.mouse.worldY) * (y - input.mouse.worldY) >
       radSqr
     ) {
       pushVec.x += -Math.sin(dir);
@@ -89,7 +89,7 @@ function move(dt) {
 
   var moveBack = level.checkCol(x, y, vx, vy, rad);
   var iterations = 0;
-  while ((moveBack.x != 0 || moveBack.y != 0) && iterations < 10) {
+  while ((moveBack.x != 0 || moveBack.y != 0) && iterations < 5) {
     iterations++;
     if (moveBack) {
       x += moveBack.x;

@@ -1,22 +1,49 @@
 import canvas from "./canvas";
 
+var lastWorldX = 0;
+var lastWorldY = 0;
+
 var keyboard = {};
 
 var mouse = {
   x: 0,
   y: 0,
+  dWorldX: 0,
+  dWorldY: 0,
+  worldX: 0,
+  worldY: 0,
   left: false,
   right: false,
-  middle: false
+  middle: false,
+  wheel: 0
 };
+
+function move() {
+  mouse.dWorldX = mouse.worldX - lastWorldX;
+  mouse.dWorldY = mouse.worldY - lastWorldY;
+  lastWorldX = mouse.worldX;
+  lastWorldY = mouse.worldY;
+  requestAnimationFrame(move);
+}
 
 function getMousePos(evt) {
   var rect = canvas.canvas.getBoundingClientRect();
   var camPos = canvas.getCamPos();
   var zoom = canvas.getZoom();
-  mouse.x = (evt.clientX - rect.left - canvas.halfWidth) / zoom + camPos.x;
-  mouse.y = (evt.clientY - rect.top - canvas.halfHeight) / zoom + camPos.y;
-  console.log(mouse.x, mouse.y);
+  mouse.worldX = (evt.clientX - rect.left - canvas.halfWidth) / zoom + camPos.x;
+  mouse.worldY = (evt.clientY - rect.top - canvas.halfHeight) / zoom + camPos.y;
+  mouse.x = evt.clientX;
+  mouse.y = evt.clientY;
+}
+
+function clearMouseWheel() {
+  mouse.wheel = 0;
+}
+
+function getMouseWheel(evt) {
+  var delta = Math.max(-1, Math.min(1, evt.wheelDelta || -evt.detail));
+  mouse.wheel = delta;
+  requestAnimationFrame(clearMouseWheel);
 }
 
 function mouseDown(evt) {
@@ -70,11 +97,20 @@ function init() {
     false
   );
 
+  canvas.canvas.addEventListener(
+    "mousewheel",
+    function(evt) {
+      getMouseWheel(evt);
+    },
+    false
+  );
+
   canvas.canvas.addEventListener("mousedown", mouseDown);
   canvas.canvas.addEventListener("mouseup", mouseUp);
   canvas.canvas.oncontextmenu = function(e) {
     e.preventDefault();
   };
+  move();
 }
 
 init();

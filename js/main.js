@@ -21,9 +21,9 @@ function gameLoop(time) {
 
   player.move(dt);
 
-  canvas.draw();
   level.draw();
   player.draw();
+  canvas.draw();
 
   var playerPos = player.getXY();
 
