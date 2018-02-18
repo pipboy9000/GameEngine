@@ -28,7 +28,7 @@ function init() {
 
 function clearCanvas() {
   ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, width, height);
+  ctx.fillRect(-halfWidth / zoom + camPosX, -halfHeight / zoom + camPosY, width / zoom, height / zoom);
 }
 
 function draw() {
@@ -63,8 +63,8 @@ function getZoom() {
 }
 
 function setCamPos(x, y) {
-  targetCamPosX = x;
-  targetCamPosY = y;
+  targetCamPosX = x * zoom;
+  targetCamPosY = y * zoom;
 }
 
 function getCamPos() {

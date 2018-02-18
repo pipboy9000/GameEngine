@@ -2,6 +2,8 @@ import canvas from "./canvas";
 
 var lastWorldX = 0;
 var lastWorldY = 0;
+var lastLeftClickTime = null;
+var clearDoubleClick = false;
 
 var keyboard = {};
 
@@ -15,7 +17,8 @@ var mouse = {
   left: false,
   right: false,
   middle: false,
-  wheel: 0
+  wheel: 0,
+  doubleClick: false
 };
 
 function move() {
@@ -23,6 +26,15 @@ function move() {
   mouse.dWorldY = mouse.worldY - lastWorldY;
   lastWorldX = mouse.worldX;
   lastWorldY = mouse.worldY;
+
+  if(clearDoubleClick){
+    clearDoubleClick = false;
+      mouse.doubleClick = false;
+  }
+
+  if(mouse.doubleClick){
+      clearDoubleClick = true;
+  }
   requestAnimationFrame(move);
 }
 
@@ -104,6 +116,10 @@ function init() {
     },
     false
   );
+
+  canvas.canvas.addEventListener("dblclick", function() {
+    mouse.doubleClick = true;
+  });
 
   canvas.canvas.addEventListener("mousedown", mouseDown);
   canvas.canvas.addEventListener("mouseup", mouseUp);
