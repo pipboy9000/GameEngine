@@ -25,8 +25,6 @@ function gameLoop(time) {
   player.draw();
   canvas.draw();
 
-  var playerPos = player.getXY();
-
   window.requestAnimationFrame(gameLoop);
 }
 
