@@ -11,7 +11,7 @@ var rad;
 var radSqr;
 var speed;
 var acc = 1.5; //acceleration
-var maxSpeed = 5;
+var maxSpeed = 20;
 var colVec;
 
 function init() {
@@ -41,7 +41,7 @@ function move(dt) {
   if (input.keyboard.KeyW || input.mouse.left) {
     if (
       (x - input.mouse.worldX) * (x - input.mouse.worldX) +
-        (y - input.mouse.worldY) * (y - input.mouse.worldY) >
+      (y - input.mouse.worldY) * (y - input.mouse.worldY) >
       radSqr
     ) {
       pushVec.x += -Math.sin(dir);
@@ -70,33 +70,47 @@ function move(dt) {
 
   pushVec = lines.normalize(pushVec);
 
+  console.log(vx, vy, push, dt)
+
   if (push) {
-    vx += pushVec.x * acc;
-    vy += pushVec.y * acc;
+    vx += pushVec.x * acc * dt;
+    vy += pushVec.y * acc * dt;
   } else {
-    if (Math.abs(vx) < 0.1) vx = 0;
-    if (Math.abs(vy) < 0.1) vy = 0;
+    if (Math.abs(vx) < 0.0000001) vx = 0;
+    if (Math.abs(vy) < 0.0000001) vy = 0;
   }
 
-  vx *= dt;
-  vy *= dt;
-
-  vx *= 0.857;
-  vy *= 0.857;
+  vx *= 0.95;
+  vy *= 0.95;
 
   x += vx;
   y += vy;
 
   var moveBack = level.checkCol(x, y, vx, vy, rad);
   var iterations = 0;
+
+  // var newVx = 0, newVy = 0;
+
   while ((moveBack.x != 0 || moveBack.y != 0) && iterations < 5) {
     iterations++;
     if (moveBack) {
       x += moveBack.x;
+      // newVx += moveBack.x
+
       y += moveBack.y;
+      // newVy += moveBack.y
     }
     moveBack = level.checkCol(x, y, moveBack.x, moveBack.y, rad);
   }
+
+  // if (newVx != 0) {
+  //   vx = newVx * 0.2
+  // }
+
+  // if (newVy != 0) {
+  //   vy = newVy * 0.2
+  // }
+
 
   canvas.setCamPos(x, y);
 }

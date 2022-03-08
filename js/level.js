@@ -3,63 +3,50 @@ import lines from "./lines";
 
 var wallsData = [
   {
-    x1: 300,
-    y1: 50,
-    x2: 550,
-    y2: 300
+    x1: 600,
+    y1: 100,
+    x2: 1100,
+    y2: 600
   },
   {
-    x1: 550,
-    y1: 300,
-    x2: 300,
-    y2: 550
+    x1: 1100,
+    y1: 600,
+    x2: 600,
+    y2: 1100
   },
   {
-    x1: 300,
-    y1: 550,
-    x2: 50,
-    y2: 50
+    x1: 600,
+    y1: 1100,
+    x2: 100,
+    y2: 100
   },
   {
-    x1: 50,
-    y1: 50,
-    x2: 300,
-    y2: 50
+    x1: 100,
+    y1: 100,
+    x2: 600,
+    y2: 100
   },
   {
-    x1: 350,
-    y1: 270,
-    x2: 300,
-    y2: 250
+    x1: 700,
+    y1: 540,
+    x2: 600,
+    y2: 500
   },
   {
-    x1: 300,
-    y1: 250,
-    x2: 250,
-    y2: 300
+    x1: 600,
+    y1: 500,
+    x2: 500,
+    y2: 600
   },
   {
-    x1: 250,
-    y1: 300,
-    x2: 350,
-    y2: 270
+    x1: 500,
+    y1: 600,
+    x2: 700,
+    y2: 540
   }
 ];
 
 var walls = [];
-
-// function checkCol(x, y, vx, vy, rad) {
-//   var moveBack = level.checkCol(x, y, vx, vy, rad);
-//   var iterations = 0;
-//   while ((moveBack.x != 0 || moveBack.y != 0) && iterations < 10) {
-//     iterations++;
-//     if (moveBack) {
-//       x += moveBack.x;
-//       y += moveBack.y;
-//     }
-//     moveBack = level.checkCol(x, y, moveBack.x, moveBack.y, rad);
-//   }
-// }
 
 function checkCol(x, y, vx, vy, rad) {
   // var dp;
